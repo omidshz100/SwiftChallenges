@@ -23,6 +23,9 @@ struct ContentView: View {
     @State var textInput_story:String = ""
     @State var textInputContainer:String = ""
     
+    @State var chall5_txt1:String = ""
+    @State var chall5_InputforChar:String = ""
+    @State var chall5_selectedChar:Character = "a"
     
     var body: some View {
         Form{
@@ -69,6 +72,24 @@ struct ContentView: View {
                 TextField("type your keyword to search!", text: $textInputContainer)
                 Text("Does it contain? \(textInput_story.fuzzyContains(textInputContainer))")
             }
+            
+            Section(header: Text("Challenge 5: Count the characters")) {
+                TextField("type your text!", text: $chall5_txt1)
+                TextField("type only the Character!", text: $chall5_InputforChar)
+                    .textInputAutocapitalization(.never)
+                    .onChange(of: chall5_InputforChar) { old, new in
+                        if new.count > 1 {
+                            chall5_InputforChar = String(new.prefix(1))
+                        }
+                        if new.count == 0 {
+                            chall5_selectedChar = "+"
+                        }
+                        if let _ = new.first {
+                            chall5_selectedChar = new.first!
+                        }
+                    }
+                Text("count is:  \(challenge5b(input: chall5_txt1, count: chall5_selectedChar))")
+            }
         }
     }
     
@@ -114,6 +135,12 @@ struct ContentView: View {
         return sortedFirstArray == sortedSecondArray
     }
     
+    //challenge 5
+    func challenge5b(input: String, count: Character) -> Int {
+       return input.reduce(0) {
+          $1 == count ? $0 + 1 : $0
+       }
+    }
     
 }
 
